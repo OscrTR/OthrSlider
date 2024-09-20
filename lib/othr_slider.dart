@@ -1,9 +1,9 @@
 library othr_slider;
 
-import 'dart:ui';
-
-import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:ui' as ui;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class OthrSlider extends StatefulWidget {
   /// The minimum value of the slider. This value is inclusive.
@@ -84,6 +84,9 @@ class OthrSlider extends StatefulWidget {
   /// The vertical offset for the label displayed above the thumb.
   final double? labelVerticalOffset;
 
+  /// The vertical offset for the text displayed in the label.
+  final double? labelTextHorizontalOffset;
+
   /// The width of the label displayed above the thumb. If null, a default width will be used.
   final double? labelWidth;
 
@@ -93,7 +96,11 @@ class OthrSlider extends StatefulWidget {
   /// The border radius for the label's background rectangle.
   final double? labelBorderRadius;
 
+  /// Path to the image that would be displayed in the label. If null, no image will be rendered.
   final String? labelImagePath;
+
+  /// Offset for the x axis of the label. If null, the image will be centered.
+  final double? labelImageHorizontalOffset;
 
   /// The color of the overlay that appears when the slider is active.
   final Color overlayColor;
@@ -143,6 +150,8 @@ class OthrSlider extends StatefulWidget {
     this.overlayWidth = 40,
     this.overlayHeight = 40,
     this.labelImagePath,
+    this.labelImageHorizontalOffset = 0,
+    this.labelTextHorizontalOffset = 0,
   });
 
   @override
@@ -154,6 +163,8 @@ class _OthrSliderState extends State<OthrSlider> {
   late Gradient _activeTrackGradient;
   late Gradient _inactiveTrackGradient;
 
+  ui.Image? _image;
+
   @override
   void initState() {
     super.initState();
@@ -163,6 +174,19 @@ class _OthrSliderState extends State<OthrSlider> {
         colors: widget.activeTrackColors ?? [Colors.blue, Colors.red]);
     _inactiveTrackGradient = LinearGradient(
         colors: widget.inactiveTrackColors ?? [Colors.grey, Colors.grey]);
+    if (widget.labelImagePath != null) {
+      _loadImage(widget.labelImagePath!);
+    }
+  }
+
+  Future<void> _loadImage(String path) async {
+    final ByteData data = await rootBundle.load(path);
+    final Uint8List lst = data.buffer.asUint8List();
+    final ui.Codec codec = await ui.instantiateImageCodec(lst);
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+    setState(() {
+      _image = frameInfo.image;
+    });
   }
 
   Color _getColorByPercentage(List<Color> colors, double value) {
@@ -206,6 +230,9 @@ class _OthrSliderState extends State<OthrSlider> {
           useCustomLabel: widget.useCustomLabel!,
           sliderValue: _sliderValue,
           labelImagePath: widget.labelImagePath,
+          image: _image,
+          labelImageHorizontalOffset: widget.labelImageHorizontalOffset!,
+          labelTextHorizontalOffset: widget.labelTextHorizontalOffset!,
         ),
         thumbColor: thumbColor,
         overlayShape: CustomOverlayShape(
@@ -309,6 +336,9 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
   final bool useCustomLabel;
   final double sliderValue;
   final String? labelImagePath;
+  final ui.Image? image;
+  final double labelImageHorizontalOffset;
+  final double labelTextHorizontalOffset;
 
   const CustomSliderThumbShape({
     this.thumbRadius = 12.0,
@@ -330,6 +360,9 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
     this.useCustomLabel = true,
     required this.sliderValue,
     this.labelImagePath,
+    this.image,
+    this.labelImageHorizontalOffset = 0,
+    this.labelTextHorizontalOffset = 0,
   });
 
   double get _disabledThumbRadius => disabledThumbRadius ?? enabledThumbRadius;
@@ -474,7 +507,16 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
       // Calculate the position to place the text within the background rectangle
       final Offset textOffset = center -
           Offset(
-              textWidth / 2,
+              textWidth / 2 + labelTextHorizontalOffset,
+              labelVerticalOffset != null
+                  ? textHeight / 2 +
+                      labelVerticalOffset! -
+                      backgroundRect.height / 2
+                  : textHeight / 2 + radius * 4 - backgroundRect.height / 2);
+
+      final Offset imageOffset = center -
+          Offset(
+              labelImageHorizontalOffset,
               labelVerticalOffset != null
                   ? textHeight / 2 +
                       labelVerticalOffset! -
@@ -485,14 +527,9 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
       textPainter.paint(canvas, textOffset);
 
       if (labelImagePath != null) {
-        final Image image = Image.asset(labelImagePath!);
-        final pictureRecorder = PictureRecorder();
-        final canvasForImage = Canvas(pictureRecorder);
-        image.image.resolve(const ImageConfiguration()).addListener(
-          ImageStreamListener((ImageInfo info, bool _) {
-            canvasForImage.drawImage(info.image, const Offset(20, 0), Paint());
-          }),
-        );
+        if (image != null) {
+          canvas.drawImage(image!, imageOffset, Paint());
+        }
       }
     }
 
