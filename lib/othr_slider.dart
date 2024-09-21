@@ -580,6 +580,8 @@ class CustomSliderTrackShape extends SliderTrackShape
       return;
     }
 
+    final canvas = context.canvas;
+
     final Rect trackRect = getPreferredRect(
       parentBox: parentBox,
       offset: offset,
@@ -593,10 +595,47 @@ class CustomSliderTrackShape extends SliderTrackShape
     final Paint inactivePaint = _createPaint(
         inactiveTrackGradient, trackRect, sliderTheme, enableAnimation, false);
 
-    final canvas = context.canvas;
-
     final Radius trackRadius = Radius.circular(trackBorderRadius);
     final Radius activeTrackRadius = Radius.circular(trackBorderRadius);
+
+    final Rect duplicatedTrackRect = trackRect.translate(-5, -5);
+    final Rect duplicatedTrackRect2 = trackRect.translate(5, 5);
+
+    // final Paint shadowPaint1 = Paint()
+    //   ..color = Colors.white.withOpacity(1)
+    //   ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 9.0);
+
+    // canvas.drawRRect(
+    //   RRect.fromLTRBAndCorners(
+    //     duplicatedTrackRect.left,
+    //     duplicatedTrackRect.top,
+    //     duplicatedTrackRect.right,
+    //     duplicatedTrackRect.bottom,
+    //     topLeft: trackRadius,
+    //     bottomLeft: trackRadius,
+    //     bottomRight: trackRadius,
+    //     topRight: trackRadius,
+    //   ),
+    //   shadowPaint1,
+    // );
+
+    // final Paint shadowPaint2 = Paint()
+    //   ..color = const Color(0xFF5E6879).withOpacity(0.3)
+    //   ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 9.0);
+
+    // canvas.drawRRect(
+    //   RRect.fromLTRBAndCorners(
+    //     duplicatedTrackRect2.left,
+    //     duplicatedTrackRect2.top,
+    //     duplicatedTrackRect2.right,
+    //     duplicatedTrackRect2.bottom,
+    //     topLeft: trackRadius,
+    //     bottomLeft: trackRadius,
+    //     bottomRight: trackRadius,
+    //     topRight: trackRadius,
+    //   ),
+    //   shadowPaint2,
+    // );
 
     _drawTrack(
       canvas: canvas,
@@ -608,6 +647,34 @@ class CustomSliderTrackShape extends SliderTrackShape
       activeTrackRadius: activeTrackRadius,
       trackRadius: trackRadius,
     );
+
+    final RRect rrect = RRect.fromRectAndRadius(trackRect, Radius.circular(12));
+
+    canvas.save();
+    canvas.clipRRect(rrect); // Apply the RRect clipping
+    canvas.saveLayer(rrect.outerRect, Paint()); // Save layer with clipping
+    final Paint innerDarkShadow = Paint()
+      ..color = const Color(0xFF5E6879).withOpacity(0.3)
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 9);
+
+    final Paint innerLightShadow = Paint()
+      ..color = const Color(0xFFFFFFFF).withOpacity(1)
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 9);
+
+    final Rect innerTopBounds = trackRect.shift(Offset(0, -30)).inflate(9);
+    final Rect innerBottomBounds = trackRect.shift(Offset(0, 30)).inflate(9);
+
+    void paintBox(
+        Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection) {
+      canvas.drawRRect(
+          BorderRadius.circular(12).resolve(textDirection).toRRect(rect),
+          paint);
+    }
+
+    paintBox(canvas, innerTopBounds, innerDarkShadow, textDirection);
+    paintBox(canvas, innerBottomBounds, innerLightShadow, textDirection);
+    canvas.restore(); // Restore after the layer
+    canvas.restore(); // Restore the clipping region
 
     if (trackBorder > 0) {
       _drawTrackBorder(canvas, trackRect, trackRadius);
