@@ -146,9 +146,9 @@ class OthrSlider extends StatefulWidget {
     this.thumbRectWidth,
     this.useCustomLabel = true,
     this.showDefaultLabel = false,
-    this.overlayRadius = 40,
-    this.overlayWidth = 40,
-    this.overlayHeight = 40,
+    this.overlayRadius,
+    this.overlayWidth,
+    this.overlayHeight,
     this.labelImagePath,
     this.labelImageHorizontalOffset = 0,
     this.labelTextHorizontalOffset = 0,
@@ -162,6 +162,9 @@ class _OthrSliderState extends State<OthrSlider> {
   late double _sliderValue;
   late Gradient _activeTrackGradient;
   late Gradient _inactiveTrackGradient;
+  late double overlayWidth;
+  late double overlayHeight;
+  late double overlayRadius;
 
   ui.Image? _image;
 
@@ -177,6 +180,9 @@ class _OthrSliderState extends State<OthrSlider> {
     if (widget.labelImagePath != null) {
       _loadImage(widget.labelImagePath!);
     }
+    overlayWidth = widget.overlayWidth ?? widget.thumbRectWidth ?? 20;
+    overlayHeight = widget.overlayHeight ?? widget.thumbRectHeight ?? 20;
+    overlayRadius = widget.overlayRadius ?? widget.thumbRadius ?? 10;
   }
 
   Future<void> _loadImage(String path) async {
@@ -236,9 +242,9 @@ class _OthrSliderState extends State<OthrSlider> {
         ),
         thumbColor: thumbColor,
         overlayShape: CustomOverlayShape(
-          overlayRadius: widget.overlayRadius!,
-          overlayHeight: widget.overlayHeight!,
-          overlayWidth: widget.overlayWidth!,
+          overlayRadius: overlayRadius,
+          overlayHeight: overlayHeight,
+          overlayWidth: overlayWidth,
           overlayColor: widget.overlayColor,
         ),
         inactiveTickMarkColor: Colors.transparent,
