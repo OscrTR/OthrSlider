@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:math' as math;
 
 class OthrSlider extends StatefulWidget {
   /// The minimum value of the slider. This value is inclusive.
@@ -156,6 +157,7 @@ class OthrSlider extends StatefulWidget {
   final Offset trackOuterBottomOffset;
   final double trackOuterBottomInflate;
   final double trackOuterShadowsRadius;
+  final bool? constrainThumbInTrack;
 
   const OthrSlider({
     super.key,
@@ -234,6 +236,7 @@ class OthrSlider extends StatefulWidget {
     this.trackOuterBottomOffset = const Offset(2, 2),
     this.trackOuterBottomInflate = 0,
     this.trackOuterShadowsRadius = 30,
+    this.constrainThumbInTrack = true,
   });
 
   @override
@@ -303,6 +306,7 @@ class _OthrSliderState extends State<OthrSlider> {
           trackInnerBottomShadowColor: widget.trackInnerBottomShadowColor,
           trackInnerBottomShadowOffset: widget.trackInnerBottomShadowOffset,
           trackInnerTopShadowColor: widget.trackInnerTopShadowColor,
+          constrainThumbInTrack: widget.constrainThumbInTrack!,
         ),
         thumbShape: CustomSliderThumbShape(
           thumbRadius: widget.thumbRadius!,
@@ -833,6 +837,7 @@ class CustomSliderTrackShape extends SliderTrackShape
   final Offset trackOuterBottomOffset;
   final double trackOuterBottomInflate;
   final double trackOuterShadowsRadius;
+  final bool constrainThumbInTrack;
 
   CustomSliderTrackShape({
     required this.activeTrackGradient,
@@ -860,6 +865,7 @@ class CustomSliderTrackShape extends SliderTrackShape
     this.trackOuterBottomOffset = const Offset(2, 2),
     this.trackOuterBottomInflate = 0,
     this.trackOuterShadowsRadius = 30,
+    this.constrainThumbInTrack = true,
   });
 
   @override
@@ -881,6 +887,55 @@ class CustomSliderTrackShape extends SliderTrackShape
     }
 
     final canvas = context.canvas;
+
+    @override
+    Rect getPreferredRect({
+      required RenderBox parentBox,
+      Offset offset = Offset.zero,
+      required SliderThemeData sliderTheme,
+      bool isEnabled = false,
+      bool isDiscrete = false,
+    }) {
+      if (constrainThumbInTrack) {
+        final double overlayWidth = sliderTheme.overlayShape!
+            .getPreferredSize(isEnabled, isDiscrete)
+            .width;
+        final double trackHeight = sliderTheme.trackHeight!;
+        assert(overlayWidth >= 0);
+        assert(trackHeight >= 0);
+
+        final double trackLeft = offset.dx;
+        final double trackTop =
+            offset.dy + (parentBox.size.height - trackHeight) / 2;
+        final double trackRight = trackLeft + parentBox.size.width;
+        final double trackBottom = trackTop + trackHeight;
+        // If the parentBox's size less than slider's size the trackRight will be less than trackLeft, so switch them.
+        return Rect.fromLTRB(math.min(trackLeft, trackRight), trackTop,
+            math.max(trackLeft, trackRight), trackBottom);
+      } else {
+        final double thumbWidth = sliderTheme.thumbShape!
+            .getPreferredSize(isEnabled, isDiscrete)
+            .width;
+        final double overlayWidth = sliderTheme.overlayShape!
+            .getPreferredSize(isEnabled, isDiscrete)
+            .width;
+        final double trackHeight = sliderTheme.trackHeight!;
+        assert(overlayWidth >= 0);
+        assert(trackHeight >= 0);
+
+        final double trackLeft =
+            offset.dx + math.max(overlayWidth / 2, thumbWidth / 2);
+        final double trackTop =
+            offset.dy + (parentBox.size.height - trackHeight) / 2;
+        final double trackRight = trackLeft +
+            parentBox.size.width -
+            math.max(thumbWidth, overlayWidth);
+        final double trackBottom = trackTop + trackHeight;
+        // If the parentBox's size less than slider's size the trackRight will be less than trackLeft, so switch them.
+        return Rect.fromLTRB(math.min(trackLeft, trackRight), trackTop,
+            math.max(trackLeft, trackRight), trackBottom);
+      }
+    }
 
     final Rect trackRect = getPreferredRect(
       parentBox: parentBox,
