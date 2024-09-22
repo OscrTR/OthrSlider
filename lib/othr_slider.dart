@@ -42,6 +42,8 @@ class OthrSlider extends StatefulWidget {
   /// A list of colors used for the inactive part of the track. The colors will be blended based on the slider's current value.
   final List<Color>? inactiveTrackColors;
 
+  final bool? displayTrackOuterShadows;
+
   /// The radius of the thumb (the draggable part of the slider).
   final double? thumbRadius;
 
@@ -68,6 +70,9 @@ class OthrSlider extends StatefulWidget {
 
   /// The color of the shadow cast by the thumb.
   final Color? thumbShadowColor;
+
+  final bool? displayThumbInnerShadows;
+  final bool? displayTrackInnerShadows;
 
   /// If true, a custom label will be displayed above the thumb instead of the default one.
   final bool? useCustomLabel;
@@ -114,6 +119,44 @@ class OthrSlider extends StatefulWidget {
   /// The height of the overlay.
   final double? overlayHeight;
 
+  final Color? thumbInnerTopShadowColor;
+  final double thumbInnerTopShadowSpread;
+  final Offset thumbInnerTopShadowOffset;
+  final double thumbInnerTopShadowInflate;
+  final Color? thumbInnerBottomShadowColor;
+  final double thumbInnerBottomShadowSpread;
+  final Offset thumbInnerBottomShadowOffset;
+  final double thumbInnerBottomShadowInflate;
+  final double thumbShadowRadius;
+  final bool displayThumbOuterShadows;
+  final Color? thumbOuterTopShadowColor;
+  final double thumbOuterTopShadowSpread;
+  final Offset thumbOuterTopShadowOffset;
+  final double thumbOuterTopShadowInflate;
+  final Color? thumbOuterBottomShadowColor;
+  final double thumbOuterBottomShadowSpread;
+  final Offset thumbOuterBottomShadowOffset;
+  final double thumbOuterBottomShadowInflate;
+
+  final double trackInnerShadowsRadius;
+  final Color? trackInnerTopShadowColor;
+  final double trackInnerTopShadowSpread;
+  final Color? trackInnerBottomShadowColor;
+  final double trackInnerBottomShadowSpread;
+  final Offset trackInnerTopShadowOffset;
+  final Offset trackInnerBottomShadowOffset;
+  final double trackInnerTopInflate;
+  final double trackInnerBottomInflate;
+  final Color? trackOuterTopShadowColor;
+  final double trackOuterTopShadowSpread;
+  final Color? trackOuterBottomShadowColor;
+  final double trackOuterBottomShadowSpread;
+  final Offset trackOuterTopOffset;
+  final double trackOuterTopInflate;
+  final Offset trackOuterBottomOffset;
+  final double trackOuterBottomInflate;
+  final double trackOuterShadowsRadius;
+
   const OthrSlider({
     super.key,
     required this.minValue,
@@ -126,7 +169,7 @@ class OthrSlider extends StatefulWidget {
     this.thumbRadius = 10,
     this.activeTrackColors,
     this.inactiveTrackColors,
-    this.thumbColors = const [Color.fromARGB(255, 204, 204, 204)],
+    this.thumbColors = const [Color(0xffdde1e7)],
     this.labelBackgroundColor,
     this.trackBorderColor = Colors.black,
     this.thumbBorderColor,
@@ -141,6 +184,15 @@ class OthrSlider extends StatefulWidget {
     this.labelBorderRadius,
     this.isValueRound = true,
     this.trackBorderRadius = 30.0,
+    this.displayTrackOuterShadows = false,
+    this.displayTrackInnerShadows = false,
+    this.trackInnerShadowsRadius = 30,
+    this.trackInnerTopShadowColor,
+    this.trackInnerTopShadowSpread = 9,
+    this.trackInnerBottomShadowColor,
+    this.trackInnerBottomShadowSpread = 4,
+    this.trackInnerTopShadowOffset = const Offset(-5, -5),
+    this.trackInnerBottomShadowOffset = const Offset(5, 5),
     this.overlayColor = Colors.black,
     this.thumbRectHeight,
     this.thumbRectWidth,
@@ -152,6 +204,36 @@ class OthrSlider extends StatefulWidget {
     this.labelImagePath,
     this.labelImageHorizontalOffset = 0,
     this.labelTextHorizontalOffset = 0,
+    this.displayThumbInnerShadows = false,
+    this.thumbInnerTopShadowColor,
+    this.thumbInnerTopShadowSpread = 4,
+    this.thumbInnerTopShadowOffset = const Offset(-5, -5),
+    this.thumbInnerTopShadowInflate = 0,
+    this.thumbInnerBottomShadowColor,
+    this.thumbInnerBottomShadowSpread = 9,
+    this.thumbInnerBottomShadowOffset = const Offset(5, 5),
+    this.thumbInnerBottomShadowInflate = 0,
+    this.thumbShadowRadius = 20,
+    this.displayThumbOuterShadows = false,
+    this.thumbOuterTopShadowColor,
+    this.thumbOuterTopShadowSpread = 1,
+    this.thumbOuterTopShadowOffset = const Offset(-1, -1),
+    this.thumbOuterTopShadowInflate = 0,
+    this.thumbOuterBottomShadowColor,
+    this.thumbOuterBottomShadowSpread = 1,
+    this.thumbOuterBottomShadowOffset = const Offset(1, 1),
+    this.thumbOuterBottomShadowInflate = 0,
+    this.trackInnerTopInflate = 0,
+    this.trackInnerBottomInflate = 0,
+    this.trackOuterTopShadowColor,
+    this.trackOuterTopShadowSpread = 1,
+    this.trackOuterBottomShadowColor,
+    this.trackOuterBottomShadowSpread = 1,
+    this.trackOuterTopOffset = const Offset(-2, -2),
+    this.trackOuterTopInflate = 0,
+    this.trackOuterBottomOffset = const Offset(2, 2),
+    this.trackOuterBottomInflate = 0,
+    this.trackOuterShadowsRadius = 30,
   });
 
   @override
@@ -216,6 +298,11 @@ class _OthrSliderState extends State<OthrSlider> {
           trackBorder: widget.trackBorder!,
           trackBorderColor: widget.trackBorderColor!,
           trackBorderRadius: widget.trackBorderRadius,
+          displayTrackOuterShadows: widget.displayTrackOuterShadows!,
+          displayTrackInnerShadows: widget.displayTrackInnerShadows!,
+          trackInnerBottomShadowColor: widget.trackInnerBottomShadowColor,
+          trackInnerBottomShadowOffset: widget.trackInnerBottomShadowOffset,
+          trackInnerTopShadowColor: widget.trackInnerTopShadowColor,
         ),
         thumbShape: CustomSliderThumbShape(
           thumbRadius: widget.thumbRadius!,
@@ -239,6 +326,25 @@ class _OthrSliderState extends State<OthrSlider> {
           image: _image,
           labelImageHorizontalOffset: widget.labelImageHorizontalOffset!,
           labelTextHorizontalOffset: widget.labelTextHorizontalOffset!,
+          displayThumbInnerShadows: widget.displayThumbInnerShadows!,
+          thumbInnerTopShadowColor: widget.thumbInnerTopShadowColor,
+          thumbInnerTopShadowSpread: widget.thumbInnerTopShadowSpread,
+          thumbInnerTopShadowOffset: widget.thumbInnerTopShadowOffset,
+          thumbInnerTopShadowInflate: widget.thumbInnerTopShadowInflate,
+          thumbInnerBottomShadowColor: widget.thumbInnerBottomShadowColor,
+          thumbInnerBottomShadowSpread: widget.thumbInnerBottomShadowSpread,
+          thumbInnerBottomShadowOffset: widget.thumbInnerBottomShadowOffset,
+          thumbInnerBottomShadowInflate: widget.thumbInnerBottomShadowInflate,
+          thumbShadowRadius: widget.thumbShadowRadius,
+          displayThumbOuterShadows: widget.displayThumbOuterShadows,
+          thumbOuterTopShadowColor: widget.thumbOuterTopShadowColor,
+          thumbOuterTopShadowSpread: widget.thumbOuterTopShadowSpread,
+          thumbOuterTopShadowOffset: widget.thumbOuterTopShadowOffset,
+          thumbOuterTopShadowInflate: widget.thumbOuterTopShadowInflate,
+          thumbOuterBottomShadowColor: widget.thumbOuterBottomShadowColor,
+          thumbOuterBottomShadowSpread: widget.thumbOuterBottomShadowSpread,
+          thumbOuterBottomShadowOffset: widget.thumbOuterBottomShadowOffset,
+          thumbOuterBottomShadowInflate: widget.thumbOuterBottomShadowInflate,
         ),
         thumbColor: thumbColor,
         overlayShape: CustomOverlayShape(
@@ -345,6 +451,25 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
   final ui.Image? image;
   final double labelImageHorizontalOffset;
   final double labelTextHorizontalOffset;
+  final bool displayThumbInnerShadows;
+  final Color? thumbInnerTopShadowColor;
+  final double thumbInnerTopShadowSpread;
+  final Offset thumbInnerTopShadowOffset;
+  final double thumbInnerTopShadowInflate;
+  final Color? thumbInnerBottomShadowColor;
+  final double thumbInnerBottomShadowSpread;
+  final Offset thumbInnerBottomShadowOffset;
+  final double thumbInnerBottomShadowInflate;
+  final double thumbShadowRadius;
+  final bool displayThumbOuterShadows;
+  final Color? thumbOuterTopShadowColor;
+  final double thumbOuterTopShadowSpread;
+  final Offset thumbOuterTopShadowOffset;
+  final double thumbOuterTopShadowInflate;
+  final Color? thumbOuterBottomShadowColor;
+  final double thumbOuterBottomShadowSpread;
+  final Offset thumbOuterBottomShadowOffset;
+  final double thumbOuterBottomShadowInflate;
 
   const CustomSliderThumbShape({
     this.thumbRadius = 12.0,
@@ -369,6 +494,25 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
     this.image,
     this.labelImageHorizontalOffset = 0,
     this.labelTextHorizontalOffset = 0,
+    this.displayThumbInnerShadows = false,
+    this.thumbInnerTopShadowColor,
+    this.thumbInnerTopShadowSpread = 4,
+    this.thumbInnerTopShadowOffset = const Offset(-5, -5),
+    this.thumbInnerTopShadowInflate = 0,
+    this.thumbInnerBottomShadowColor,
+    this.thumbInnerBottomShadowSpread = 9,
+    this.thumbInnerBottomShadowOffset = const Offset(5, 5),
+    this.thumbInnerBottomShadowInflate = 0,
+    this.thumbShadowRadius = 20,
+    this.displayThumbOuterShadows = false,
+    this.thumbOuterTopShadowColor,
+    this.thumbOuterTopShadowSpread = 1,
+    this.thumbOuterTopShadowOffset = const Offset(1, 1),
+    this.thumbOuterTopShadowInflate = 0,
+    this.thumbOuterBottomShadowColor,
+    this.thumbOuterBottomShadowSpread = 1,
+    this.thumbOuterBottomShadowOffset = const Offset(-1, -1),
+    this.thumbOuterBottomShadowInflate = 0,
   });
 
   double get _disabledThumbRadius => disabledThumbRadius ?? enabledThumbRadius;
@@ -426,6 +570,63 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
       drawShadow(canvas, center);
     }
 
+    // Draw thumb outer shadows
+    if (displayThumbOuterShadows) {
+      final Rect outerTopBounds = Rect.fromCenter(
+        center: center,
+        width: 20,
+        height: 20,
+      ).shift(thumbOuterTopShadowOffset).inflate(thumbOuterTopShadowInflate);
+
+      final Rect outerTBottomBounds = Rect.fromCenter(
+        center: center,
+        width: 20,
+        height: 20,
+      )
+          .shift(thumbOuterBottomShadowOffset)
+          .inflate(thumbOuterBottomShadowInflate);
+
+      final Paint outerTopShadow = Paint()
+        ..color = thumbOuterTopShadowColor ??
+            const Color(0xFFFFFFFF).withOpacity(0.45)
+        ..maskFilter =
+            MaskFilter.blur(BlurStyle.normal, thumbOuterTopShadowSpread);
+
+      final Paint outerBottomShadow = Paint()
+        ..color = thumbOuterBottomShadowColor ??
+            const Color(0xFF5E6879).withOpacity(0.3)
+        ..maskFilter =
+            MaskFilter.blur(BlurStyle.normal, thumbOuterBottomShadowSpread);
+
+      canvas.drawRRect(
+        RRect.fromLTRBAndCorners(
+          outerTBottomBounds.left,
+          outerTBottomBounds.top,
+          outerTBottomBounds.right,
+          outerTBottomBounds.bottom,
+          topLeft: Radius.circular(thumbRadius),
+          bottomLeft: Radius.circular(thumbRadius),
+          bottomRight: Radius.circular(thumbRadius),
+          topRight: Radius.circular(thumbRadius),
+        ),
+        outerBottomShadow,
+      );
+
+      canvas.drawRRect(
+        RRect.fromLTRBAndCorners(
+          outerTopBounds.left,
+          outerTopBounds.top,
+          outerTopBounds.right,
+          outerTopBounds.bottom,
+          topLeft: Radius.circular(thumbRadius),
+          bottomLeft: Radius.circular(thumbRadius),
+          bottomRight: Radius.circular(thumbRadius),
+          topRight: Radius.circular(thumbRadius),
+        ),
+        outerTopShadow,
+      );
+    }
+
     // Draw thumb
     final Paint paint = Paint()
       ..color = color
@@ -440,12 +641,71 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
     );
     canvas.drawRRect(thumbRRect, paint);
 
+    // Draw thumb inner shadows
+    if (displayThumbInnerShadows) {
+      final RRect rrect = RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: center,
+            width: thumbRectWidth ?? 20.0,
+            height: thumbRectHeight ?? 20.0,
+          ),
+          Radius.circular(thumbRadius));
+
+      canvas.save();
+      canvas.clipRRect(rrect);
+      canvas.saveLayer(rrect.outerRect, Paint());
+
+      final Paint innerTopShadow = Paint()
+        ..color = thumbInnerTopShadowColor ??
+            const Color(0xFFFFFFFF).withOpacity(0.45)
+        ..maskFilter =
+            MaskFilter.blur(BlurStyle.normal, thumbInnerTopShadowSpread);
+
+      final Paint innerBottomShadow = Paint()
+        ..color = thumbInnerBottomShadowColor ??
+            const Color(0xFF5E6879).withOpacity(0.3)
+        ..maskFilter =
+            MaskFilter.blur(BlurStyle.normal, thumbInnerBottomShadowSpread);
+
+      final Rect innerTopBounds = Rect.fromCenter(
+        center: center,
+        width: 20,
+        height: 20,
+      ).shift(thumbInnerTopShadowOffset).inflate(thumbInnerTopShadowInflate);
+
+      final Rect innerBottomBounds = Rect.fromCenter(
+        center: center,
+        width: thumbRectWidth ?? 20.0,
+        height: thumbRectHeight ?? 20.0,
+      )
+          .shift(thumbInnerBottomShadowOffset)
+          .inflate(thumbInnerBottomShadowInflate);
+
+      void paintBox(
+          Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection) {
+        canvas.drawRRect(
+            BorderRadius.circular(thumbShadowRadius)
+                .resolve(textDirection)
+                .toRRect(rect),
+            paint);
+      }
+
+      paintBox(canvas, innerTopBounds, innerTopShadow, textDirection);
+      paintBox(canvas, innerBottomBounds, innerBottomShadow, textDirection);
+
+      canvas.restore(); // Restore after the layer
+      canvas.restore(); // Restore the clipping region
+    }
+
     // Draw border
     final Paint borderPaint = Paint()
       ..color = thumbBorderColor ?? Colors.black
       ..style = PaintingStyle.stroke
       ..strokeWidth = thumbBorderWidth ?? 1.0;
-    canvas.drawRRect(thumbRRect, borderPaint);
+
+    if (thumbBorderWidth != null) {
+      canvas.drawRRect(thumbRRect, borderPaint);
+    }
 
     final double radius = Tween<double>(
       begin: _disabledThumbRadius,
@@ -553,6 +813,26 @@ class CustomSliderTrackShape extends SliderTrackShape
   final double trackBorder;
   final Color trackBorderColor;
   final double trackBorderRadius;
+  final bool displayTrackOuterShadows;
+  final bool displayTrackInnerShadows;
+  final double trackInnerShadowsRadius;
+  final Color? trackInnerTopShadowColor;
+  final double trackInnerTopShadowSpread;
+  final Color? trackInnerBottomShadowColor;
+  final double trackInnerBottomShadowSpread;
+  final Offset trackInnerTopShadowOffset;
+  final Offset trackInnerBottomShadowOffset;
+  final double trackInnerTopInflate;
+  final double trackInnerBottomInflate;
+  final Color? trackOuterTopShadowColor;
+  final double trackOuterTopShadowSpread;
+  final Color? trackOuterBottomShadowColor;
+  final double trackOuterBottomShadowSpread;
+  final Offset trackOuterTopOffset;
+  final double trackOuterTopInflate;
+  final Offset trackOuterBottomOffset;
+  final double trackOuterBottomInflate;
+  final double trackOuterShadowsRadius;
 
   CustomSliderTrackShape({
     required this.activeTrackGradient,
@@ -560,6 +840,26 @@ class CustomSliderTrackShape extends SliderTrackShape
     this.trackBorder = 1.0,
     this.trackBorderColor = Colors.black,
     this.trackBorderRadius = 30.0,
+    this.displayTrackOuterShadows = false,
+    this.displayTrackInnerShadows = false,
+    this.trackInnerShadowsRadius = 30,
+    this.trackInnerTopShadowColor,
+    this.trackInnerTopShadowSpread = 9,
+    this.trackInnerBottomShadowColor,
+    this.trackInnerBottomShadowSpread = 4,
+    this.trackInnerTopShadowOffset = const Offset(-5, -5),
+    this.trackInnerBottomShadowOffset = const Offset(5, 5),
+    this.trackInnerTopInflate = 0,
+    this.trackInnerBottomInflate = 0,
+    this.trackOuterTopShadowColor,
+    this.trackOuterTopShadowSpread = 1,
+    this.trackOuterBottomShadowColor,
+    this.trackOuterBottomShadowSpread = 1,
+    this.trackOuterTopOffset = const Offset(-2, -2),
+    this.trackOuterTopInflate = 0,
+    this.trackOuterBottomOffset = const Offset(2, 2),
+    this.trackOuterBottomInflate = 0,
+    this.trackOuterShadowsRadius = 30,
   });
 
   @override
@@ -598,44 +898,37 @@ class CustomSliderTrackShape extends SliderTrackShape
     final Radius trackRadius = Radius.circular(trackBorderRadius);
     final Radius activeTrackRadius = Radius.circular(trackBorderRadius);
 
-    final Rect duplicatedTrackRect = trackRect.translate(-5, -5);
-    final Rect duplicatedTrackRect2 = trackRect.translate(5, 5);
+    // Draw track outer shadows
+    if (displayTrackOuterShadows) {
+      final Paint outerTopShadow = Paint()
+        ..color = trackOuterTopShadowColor ?? Colors.white.withOpacity(0.45)
+        ..maskFilter =
+            MaskFilter.blur(BlurStyle.normal, trackOuterTopShadowSpread);
 
-    // final Paint shadowPaint1 = Paint()
-    //   ..color = Colors.white.withOpacity(1)
-    //   ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 9.0);
+      final Paint outerBottomShadow = Paint()
+        ..color = trackOuterBottomShadowColor ??
+            const Color(0xFF5E6879).withOpacity(0.3)
+        ..maskFilter =
+            MaskFilter.blur(BlurStyle.normal, trackOuterBottomShadowSpread);
 
-    // canvas.drawRRect(
-    //   RRect.fromLTRBAndCorners(
-    //     duplicatedTrackRect.left,
-    //     duplicatedTrackRect.top,
-    //     duplicatedTrackRect.right,
-    //     duplicatedTrackRect.bottom,
-    //     topLeft: trackRadius,
-    //     bottomLeft: trackRadius,
-    //     bottomRight: trackRadius,
-    //     topRight: trackRadius,
-    //   ),
-    //   shadowPaint1,
-    // );
+      final Rect outerTopBounds =
+          trackRect.shift(trackOuterTopOffset).inflate(trackOuterTopInflate);
+      final Rect outerBottomBounds = trackRect
+          .shift(trackOuterBottomOffset)
+          .inflate(trackOuterBottomInflate);
 
-    // final Paint shadowPaint2 = Paint()
-    //   ..color = const Color(0xFF5E6879).withOpacity(0.3)
-    //   ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 9.0);
+      void paintBox(
+          Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection) {
+        canvas.drawRRect(
+            BorderRadius.circular(trackOuterShadowsRadius)
+                .resolve(textDirection)
+                .toRRect(rect),
+            paint);
+      }
 
-    // canvas.drawRRect(
-    //   RRect.fromLTRBAndCorners(
-    //     duplicatedTrackRect2.left,
-    //     duplicatedTrackRect2.top,
-    //     duplicatedTrackRect2.right,
-    //     duplicatedTrackRect2.bottom,
-    //     topLeft: trackRadius,
-    //     bottomLeft: trackRadius,
-    //     bottomRight: trackRadius,
-    //     topRight: trackRadius,
-    //   ),
-    //   shadowPaint2,
-    // );
+      paintBox(canvas, outerTopBounds, outerTopShadow, textDirection);
+      paintBox(canvas, outerBottomBounds, outerBottomShadow, textDirection);
+    }
 
     _drawTrack(
       canvas: canvas,
@@ -648,33 +941,47 @@ class CustomSliderTrackShape extends SliderTrackShape
       trackRadius: trackRadius,
     );
 
-    final RRect rrect = RRect.fromRectAndRadius(trackRect, Radius.circular(12));
+    // Draw inner track shadows
+    if (displayTrackInnerShadows) {
+      final RRect rrect = RRect.fromRectAndRadius(
+          trackRect, Radius.circular(trackInnerShadowsRadius));
 
-    canvas.save();
-    canvas.clipRRect(rrect); // Apply the RRect clipping
-    canvas.saveLayer(rrect.outerRect, Paint()); // Save layer with clipping
-    final Paint innerDarkShadow = Paint()
-      ..color = const Color(0xFF5E6879).withOpacity(0.3)
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 9);
+      canvas.save();
+      canvas.clipRRect(rrect);
+      canvas.saveLayer(rrect.outerRect, Paint());
+      final Paint innerTopShadow = Paint()
+        ..color =
+            trackInnerTopShadowColor ?? const Color(0xFF5E6879).withOpacity(0.3)
+        ..maskFilter =
+            MaskFilter.blur(BlurStyle.normal, trackInnerTopShadowSpread);
 
-    final Paint innerLightShadow = Paint()
-      ..color = const Color(0xFFFFFFFF).withOpacity(1)
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 9);
+      final Paint innerBottomShadow = Paint()
+        ..color = trackInnerBottomShadowColor ??
+            const Color(0xFFFFFFFF).withOpacity(0.45)
+        ..maskFilter =
+            MaskFilter.blur(BlurStyle.normal, trackInnerBottomShadowSpread);
 
-    final Rect innerTopBounds = trackRect.shift(Offset(0, -30)).inflate(9);
-    final Rect innerBottomBounds = trackRect.shift(Offset(0, 30)).inflate(9);
+      final Rect innerTopBounds = trackRect
+          .shift(trackInnerTopShadowOffset)
+          .inflate(trackInnerTopInflate);
+      final Rect innerBottomBounds = trackRect
+          .shift(trackInnerBottomShadowOffset)
+          .inflate(trackInnerBottomInflate);
 
-    void paintBox(
-        Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection) {
-      canvas.drawRRect(
-          BorderRadius.circular(12).resolve(textDirection).toRRect(rect),
-          paint);
+      void paintBox(
+          Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection) {
+        canvas.drawRRect(
+            BorderRadius.circular(trackInnerShadowsRadius)
+                .resolve(textDirection)
+                .toRRect(rect),
+            paint);
+      }
+
+      paintBox(canvas, innerTopBounds, innerTopShadow, textDirection);
+      paintBox(canvas, innerBottomBounds, innerBottomShadow, textDirection);
+      canvas.restore(); // Restore after the layer
+      canvas.restore(); // Restore the clipping region
     }
-
-    paintBox(canvas, innerTopBounds, innerDarkShadow, textDirection);
-    paintBox(canvas, innerBottomBounds, innerLightShadow, textDirection);
-    canvas.restore(); // Restore after the layer
-    canvas.restore(); // Restore the clipping region
 
     if (trackBorder > 0) {
       _drawTrackBorder(canvas, trackRect, trackRadius);
