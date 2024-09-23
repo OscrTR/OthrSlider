@@ -158,6 +158,7 @@ class OthrSlider extends StatefulWidget {
   final double trackOuterBottomInflate;
   final double trackOuterShadowsRadius;
   final bool? constrainThumbInTrack;
+  final bool isThumbCOlorEqualToTrackPosition;
 
   const OthrSlider({
     super.key,
@@ -237,6 +238,7 @@ class OthrSlider extends StatefulWidget {
     this.trackOuterBottomInflate = 0,
     this.trackOuterShadowsRadius = 30,
     this.constrainThumbInTrack = true,
+    this.isThumbCOlorEqualToTrackPosition = false,
   });
 
   @override
@@ -250,6 +252,7 @@ class _OthrSliderState extends State<OthrSlider> {
   late double overlayWidth;
   late double overlayHeight;
   late double overlayRadius;
+  List<double> stops = [];
 
   ui.Image? _image;
 
@@ -268,6 +271,14 @@ class _OthrSliderState extends State<OthrSlider> {
     overlayWidth = widget.overlayWidth ?? widget.thumbRectWidth ?? 20;
     overlayHeight = widget.overlayHeight ?? widget.thumbRectHeight ?? 20;
     overlayRadius = widget.overlayRadius ?? widget.thumbRadius ?? 10;
+
+    if (_activeTrackGradient.stops != null) {
+      stops = _activeTrackGradient.stops!;
+    } else {
+      for (var i = 0; i < _activeTrackGradient.colors.length; i++) {
+        stops.add(i.toDouble());
+      }
+    }
   }
 
   Future<void> _loadImage(String path) async {
@@ -287,10 +298,35 @@ class _OthrSliderState extends State<OthrSlider> {
         (percentage * (colors.length - 1)).clamp(0, colors.length - 1).toInt()];
   }
 
+  Color _getGradientColor(Gradient gradient) {
+    double sliderValueToUse =
+        _sliderValue / widget.maxValue * (stops.length - 1);
+    if (widget.divisions != null) {
+      sliderValueToUse = sliderValueToUse.floorToDouble();
+    }
+
+    final int stopIndex =
+        stops.lastIndexWhere((stop) => stop <= sliderValueToUse);
+
+    if (stopIndex == stops.length - 1) {
+      return gradient.colors.last;
+    }
+
+    final Color startColor = gradient.colors[stopIndex];
+    final Color endColor = gradient.colors[stopIndex + 1];
+    final double startStop = stops[stopIndex];
+    final double endStop = stops[stopIndex + 1];
+
+    final double localT =
+        (sliderValueToUse - startStop) / (endStop - startStop);
+    return Color.lerp(startColor, endColor, localT)!;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Color thumbColor =
-        _getColorByPercentage(widget.thumbColors!, _sliderValue);
+    final Color thumbColor = widget.isThumbCOlorEqualToTrackPosition
+        ? _getGradientColor(_activeTrackGradient)
+        : _getColorByPercentage(widget.thumbColors!, _sliderValue);
 
     return SliderTheme(
       data: SliderTheme.of(context).copyWith(
