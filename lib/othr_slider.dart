@@ -94,7 +94,7 @@ class OthrSlider extends StatefulWidget {
   final double? labelTextHorizontalOffset;
 
   /// The width of the label displayed above the thumb. If null, a default width will be used.
-  final double? labelWidth;
+  final double labelWidth;
 
   /// The height of the label displayed above the thumb. If null, a default height will be used.
   final double? labelHeight;
@@ -182,7 +182,7 @@ class OthrSlider extends StatefulWidget {
     this.thumbShadowHeight,
     this.thumbShadowColor,
     this.labelVerticalOffset,
-    this.labelWidth,
+    this.labelWidth = 40,
     this.labelHeight,
     this.labelBorderRadius,
     this.isValueRound = true,
@@ -343,6 +343,7 @@ class _OthrSliderState extends State<OthrSlider> {
           trackInnerBottomShadowOffset: widget.trackInnerBottomShadowOffset,
           trackInnerTopShadowColor: widget.trackInnerTopShadowColor,
           constrainThumbInTrack: widget.constrainThumbInTrack!,
+          labelWidth: widget.labelWidth,
         ),
         thumbShape: CustomSliderThumbShape(
           thumbRadius: widget.thumbRadius!,
@@ -431,7 +432,7 @@ class CustomOverlayShape extends SliderComponentShape {
 
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
-    return Size(overlayWidth, overlayHeight);
+    return const Size(0, 0);
   }
 
   @override
@@ -874,6 +875,7 @@ class CustomSliderTrackShape extends SliderTrackShape
   final double trackOuterBottomInflate;
   final double trackOuterShadowsRadius;
   final bool constrainThumbInTrack;
+  final double labelWidth;
 
   CustomSliderTrackShape({
     required this.activeTrackGradient,
@@ -902,6 +904,7 @@ class CustomSliderTrackShape extends SliderTrackShape
     this.trackOuterBottomInflate = 0,
     this.trackOuterShadowsRadius = 30,
     this.constrainThumbInTrack = true,
+    required this.labelWidth,
   });
 
   @override
@@ -932,45 +935,41 @@ class CustomSliderTrackShape extends SliderTrackShape
       bool isEnabled = false,
       bool isDiscrete = false,
     }) {
-      if (constrainThumbInTrack) {
-        final double overlayWidth = sliderTheme.overlayShape!
-            .getPreferredSize(isEnabled, isDiscrete)
-            .width;
-        final double trackHeight = sliderTheme.trackHeight!;
-        assert(overlayWidth >= 0);
-        assert(trackHeight >= 0);
+      // if (constrainThumbInTrack) {
+      final double trackHeight = sliderTheme.trackHeight!;
+      assert(trackHeight >= 0);
 
-        final double trackLeft = offset.dx;
-        final double trackTop =
-            offset.dy + (parentBox.size.height - trackHeight) / 2;
-        final double trackRight = trackLeft + parentBox.size.width;
-        final double trackBottom = trackTop + trackHeight;
-        // If the parentBox's size less than slider's size the trackRight will be less than trackLeft, so switch them.
-        return Rect.fromLTRB(math.min(trackLeft, trackRight), trackTop,
-            math.max(trackLeft, trackRight), trackBottom);
-      } else {
-        final double thumbWidth = sliderTheme.thumbShape!
-            .getPreferredSize(isEnabled, isDiscrete)
-            .width;
-        final double overlayWidth = sliderTheme.overlayShape!
-            .getPreferredSize(isEnabled, isDiscrete)
-            .width;
-        final double trackHeight = sliderTheme.trackHeight!;
-        assert(overlayWidth >= 0);
-        assert(trackHeight >= 0);
+      final double trackLeft = offset.dx;
+      final double trackTop =
+          offset.dy + (parentBox.size.height - trackHeight) / 2;
+      final double trackRight = trackLeft + parentBox.size.width;
+      final double trackBottom = trackTop + trackHeight;
+      // If the parentBox's size less than slider's size the trackRight will be less than trackLeft, so switch them.
+      return Rect.fromLTRB(math.min(trackLeft, trackRight), trackTop,
+          math.max(trackLeft, trackRight), trackBottom);
+      // } else {
+      //   final double thumbWidth = sliderTheme.thumbShape!
+      //       .getPreferredSize(isEnabled, isDiscrete)
+      //       .width;
+      //   final double overlayWidth = sliderTheme.overlayShape!
+      //       .getPreferredSize(isEnabled, isDiscrete)
+      //       .width;
+      //   final double trackHeight = sliderTheme.trackHeight!;
+      //   assert(overlayWidth >= 0);
+      //   assert(trackHeight >= 0);
 
-        final double trackLeft =
-            offset.dx + math.max(overlayWidth / 2, thumbWidth / 2);
-        final double trackTop =
-            offset.dy + (parentBox.size.height - trackHeight) / 2;
-        final double trackRight = trackLeft +
-            parentBox.size.width -
-            math.max(thumbWidth, overlayWidth);
-        final double trackBottom = trackTop + trackHeight;
-        // If the parentBox's size less than slider's size the trackRight will be less than trackLeft, so switch them.
-        return Rect.fromLTRB(math.min(trackLeft, trackRight), trackTop,
-            math.max(trackLeft, trackRight), trackBottom);
-      }
+      //   final double trackLeft =
+      //       offset.dx + math.max(overlayWidth / 2, thumbWidth / 2);
+      //   final double trackTop =
+      //       offset.dy + (parentBox.size.height - trackHeight) / 2;
+      //   final double trackRight = trackLeft +
+      //       parentBox.size.width -
+      //       math.max(thumbWidth, overlayWidth);
+      //   final double trackBottom = trackTop + trackHeight;
+      //   // If the parentBox's size less than slider's size the trackRight will be less than trackLeft, so switch them.
+      //   return Rect.fromLTRB(math.min(trackLeft, trackRight), trackTop,
+      //       math.max(trackLeft, trackRight), trackBottom);
+      // }
     }
 
     final Rect trackRect = getPreferredRect(
