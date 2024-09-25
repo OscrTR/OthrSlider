@@ -205,8 +205,6 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
     this.image,
   });
 
-  double get _disabledThumbRadius => disabledThumbRadius ?? enabledThumbRadius;
-
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
     return Size.fromRadius(thumbConfig.radius);
@@ -369,11 +367,6 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
     if (thumbConfig.borderWidth != 0) {
       canvas.drawRRect(thumbRRect, borderPaint);
     }
-
-    final double radius = Tween<double>(
-      begin: _disabledThumbRadius,
-      end: thumbConfig.radius,
-    ).evaluate(enableAnimation);
 
     Future<void> drawLabel(
         Canvas canvas, Offset center, TextDirection textDirection) async {
