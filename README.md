@@ -3,7 +3,7 @@
 OthrSlider is a highly customizable Flutter slider widget that allows you to control every aspect of the slider's appearance, including track, thumb, overlay, and label configuration. This package is ideal for developers who need to create unique and visually appealing sliders for their Flutter applications.
 
 <p align="center">
-  <img alt="image 1" src="./images/othr_slider_image.png" width="30%">
+  <img alt="image 1" src="https://github.com/OscrTR/OthrSlider/blob/main/images/othr_slider_image.png" width="30%">
 </p>
 
 ## Features
@@ -27,12 +27,9 @@ Then, run the following command to install the package:
 
 ```bash
 flutter pub get
-
 ```
 
 ## Usage
-
-Minimal config.
 
 ```dart
 import 'package:flutter/material.dart';
