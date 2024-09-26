@@ -1,6 +1,7 @@
 name: othr_slider
 description: "A customizable slider."
 version: 0.0.1
+homepage: https://github.com/OscrTR/OthrSlider
 
 environment:
   sdk: ^3.5.1
