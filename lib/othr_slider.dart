@@ -68,7 +68,7 @@ class _OthrSliderState extends State<OthrSlider> {
     double percentage = (value - widget.sliderState.minValue) /
         (widget.sliderState.maxValue - widget.sliderState.minValue);
     return colors[
-        (percentage * (colors.length - 1)).clamp(0, colors.length - 1).toInt()];
+        (percentage * (colors.length - 1).clamp(0, colors.length - 1)).round()];
   }
 
   Color _getGradientColor(Gradient gradient) {
