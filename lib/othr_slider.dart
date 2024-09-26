@@ -207,7 +207,7 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
 
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
-    return Size.fromRadius(thumbConfig.radius);
+    return Size(thumbConfig.width, thumbConfig.height);
   }
 
   @override
@@ -507,10 +507,10 @@ class CustomSliderTrackShape extends SliderTrackShape
         final double trackHeight = sliderTheme.trackHeight!;
         assert(trackHeight >= 0);
 
-        final double trackLeft = offset.dx;
+        final double trackLeft = offset.dx + 1;
         final double trackTop =
             offset.dy + (parentBox.size.height - trackHeight) / 2;
-        final double trackRight = trackLeft + parentBox.size.width;
+        final double trackRight = trackLeft + parentBox.size.width - 2;
         final double trackBottom = trackTop + trackHeight;
         // If the parentBox's size less than slider's size the trackRight will be less than trackLeft, so switch them.
         return Rect.fromLTRB(math.min(trackLeft, trackRight), trackTop,
