@@ -20,7 +20,7 @@ Add othr_slider to your pubspec.yaml:
 
 ```bash
 dependencies:
-    othr_slider: ^0.0.2
+    othr_slider: ^0.0.3
 ```
 
 Then, run the following command to install the package:
