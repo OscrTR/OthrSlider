@@ -171,7 +171,7 @@ class LabelConfiguration {
   /// Default width is 40.
   final double width;
 
-  /// Default height is 40.
+  /// Default height is 24.
   final double height;
 
   /// Default radius is 5.
