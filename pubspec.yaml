@@ -1,6 +1,6 @@
 name: othr_slider
 description: "A highly customizable range slider that allows you to control every aspect of the slider's appearance, including track, thumb, overlay, and label configuration."
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/OscrTR/OthrSlider
 
 environment:
